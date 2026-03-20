@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useStore, Script, FontSize } from '../../store/useStore';
-import { Plus, Trash2, FileText, Save, Check } from 'lucide-react';
+import { Plus, Trash2, FileText, Save, Check, ChevronDown } from 'lucide-react';
 
 const FONT_SIZE_OPTIONS: { value: FontSize; label: string }[] = [
   { value: 'lg',  label: 'Large' },
@@ -169,20 +169,19 @@ export const ScriptsTab: React.FC = () => {
             {/* Font Size */}
             <div className="flex items-center gap-3">
               <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Fuente</span>
-              <div className="flex gap-1">
-                {FONT_SIZE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => { setLocalFontSize(opt.value); markDirty(); }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase transition-all ${
-                      localFontSize === opt.value
-                        ? 'bg-white/15 text-white'
-                        : 'bg-white/5 text-white/30 hover:text-white/50 hover:bg-white/8'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+              <div className="relative group">
+                <select
+                  value={localFontSize}
+                  onChange={(e) => { setLocalFontSize(e.target.value as FontSize); markDirty(); }}
+                  className="appearance-none bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-[10px] font-black uppercase pl-3 pr-8 py-2 rounded-lg border border-white/5 hover:border-white/10 transition-all cursor-pointer outline-none w-28"
+                >
+                  {FONT_SIZE_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value} className="bg-[#1a1a1a] text-white">
+                      {opt.label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-white/40 transition-colors" />
               </div>
             </div>
           </div>

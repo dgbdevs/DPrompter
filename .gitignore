@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Development certificate
+devcert.pfx
+appxmanifest.xml
+src-tauri\binaries
+src-tauri\target
+src-tauri\src-tauri\binaries
+src-tauri\src-tauri\target
+distMSIX
+distStore

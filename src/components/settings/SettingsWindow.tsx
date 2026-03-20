@@ -21,8 +21,8 @@ export const SettingsWindow: React.FC = () => {
   }, []);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'scripts',   label: 'Scripts',           icon: <FileText size={18} /> },
-    { id: 'shortcuts', label: 'Accesos directos',  icon: <Keyboard size={18} /> },
+    { id: 'scripts', label: 'Scripts', icon: <FileText size={18} /> },
+    { id: 'shortcuts', label: 'Accesos directos', icon: <Keyboard size={18} /> },
   ];
 
   return (
@@ -37,11 +37,10 @@ export const SettingsWindow: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${
-                activeTab === tab.id
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${activeTab === tab.id
                   ? 'bg-white/10 text-white shadow-lg'
                   : 'text-white/40 hover:text-white/70 hover:bg-white/5'
-              }`}
+                }`}
             >
               {tab.icon}
               {tab.label}
@@ -49,7 +48,7 @@ export const SettingsWindow: React.FC = () => {
           ))}
         </div>
         <div className="px-6 mt-auto">
-          <p className="text-[10px] text-white/15 font-mono">Teleprompter Pro v0.1</p>
+          <p className="text-[10px] text-white/15 font-mono">DPrompter v0.1.1</p>
         </div>
       </nav>
 
