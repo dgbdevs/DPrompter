@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useStore } from '../store/useStore';
-import { FontSize } from '../lib/scriptParser';
+import { FontSize, DisplayMode } from '../lib/scriptParser';
 import { Player } from './Player';
 import { SearchOverlay } from './SearchOverlay';
 import { useKeyboardShortcuts } from '../hooks/useKeyboardShortcuts';
 import { useAutoplay } from '../hooks/useAutoplay';
-import { Settings, ChevronDown, GripHorizontal } from 'lucide-react';
+import { Settings, ChevronDown, GripHorizontal, AlignVerticalSpaceAround, MoveHorizontal } from 'lucide-react';
 import { getAllWebviewWindows } from '@tauri-apps/api/webviewWindow';
 
 const FONT_SIZE_OPTIONS: { value: FontSize; label: string }[] = [
@@ -60,6 +60,12 @@ export const TeleprompterShell: React.FC = () => {
     setFontDropdownOpen(false);
   };
 
+  const toggleDisplayMode = () => {
+    if (!activeScript) return;
+    const newMode: DisplayMode = activeScript.displayMode === 'horizontal' ? 'vertical' : 'horizontal';
+    updateScript(activeScript.id, { displayMode: newMode });
+  };
+
   return (
     <main className="h-screen w-screen flex flex-col items-center overflow-hidden bg-[#0a0a0f] select-none">
       {/* Drag handle - this is the grabbable area to move the window */}
@@ -109,6 +115,21 @@ export const TeleprompterShell: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Display Mode Toggle */}
+        <button
+          onClick={toggleDisplayMode}
+          className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-full px-2.5 h-6 hover:bg-white/10 transition-all"
+          title={`Modo: ${(activeScript?.displayMode || 'vertical') === 'vertical' ? 'Vertical' : 'Horizontal'}`}
+        >
+          {(activeScript?.displayMode || 'vertical') === 'vertical'
+            ? <AlignVerticalSpaceAround size={10} className="text-white/50" />
+            : <MoveHorizontal size={10} className="text-white/50" />
+          }
+          <span className="text-white/50 font-bold text-[8px] uppercase tracking-tight">
+            {(activeScript?.displayMode || 'vertical') === 'vertical' ? 'V' : 'H'}
+          </span>
+        </button>
 
         {/* Speed Badge */}
         <div className="bg-white/5 border border-white/10 rounded-full h-6 flex items-center px-2.5">

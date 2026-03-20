@@ -19,6 +19,10 @@ export const useAutoplay = () => {
     const script = state.scripts.find((s) => s.id === activeScriptId);
     if (!script) return;
 
+    // In horizontal mode, the rAF loop in Player handles scrolling.
+    // Autoplay (line advancement) only applies to vertical mode.
+    if ((script.displayMode || 'vertical') === 'horizontal') return;
+
     const interval = 3000 / script.speedMultiplier;
 
     intervalRef.current = window.setInterval(() => {
@@ -31,6 +35,13 @@ export const useAutoplay = () => {
 
       const currentScript = s.scripts.find((sc) => sc.id === s.activeScriptId);
       if (!currentScript) return;
+
+      // Double-check: if mode changed to horizontal while playing, stop the interval
+      if ((currentScript.displayMode || 'vertical') === 'horizontal') {
+        if (intervalRef.current) window.clearInterval(intervalRef.current);
+        intervalRef.current = null;
+        return;
+      }
 
       const lines = getDisplayLines(currentScript.content, currentScript.fontSize || 'xl');
       const nextIndex = s.currentLineIndex + 1;

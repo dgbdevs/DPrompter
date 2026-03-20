@@ -1,5 +1,6 @@
 // Font size type lives here to avoid circular deps between store and parser
 export type FontSize = 'lg' | 'xl' | '2xl' | '3xl';
+export type DisplayMode = 'vertical' | 'horizontal';
 
 // Characters per line estimate based on font size and ~750px display width
 const CHARS_PER_LINE: Record<FontSize, number> = {

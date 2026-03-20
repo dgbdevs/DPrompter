@@ -12,6 +12,7 @@ export const useKeyboardShortcuts = () => {
     nextScript,
     prevScript,
     updateActiveScriptSpeed,
+    toggleDisplayMode,
     openSearch,
     isPlaying,
     shortcuts,
@@ -103,6 +104,9 @@ export const useKeyboardShortcuts = () => {
       if (matchesShortcut(e, getKeysForCommand('speedDown'))) {
         e.preventDefault(); updateActiveScriptSpeed(-0.1); return;
       }
+      if (matchesShortcut(e, getKeysForCommand('toggleMode'))) {
+        e.preventDefault(); toggleDisplayMode(); return;
+      }
 
       // Escape: stop playback
       if (e.key === 'Escape') {
@@ -114,7 +118,7 @@ export const useKeyboardShortcuts = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [
     togglePlay, prevLine, nextLineWithPause, goToStart, goToEnd,
-    nextScript, prevScript, updateActiveScriptSpeed, openSearch,
+    nextScript, prevScript, updateActiveScriptSpeed, toggleDisplayMode, openSearch,
     toggleSettingsWindow, isPlaying, matchesShortcut, getKeysForCommand, search.isOpen,
   ]);
 };

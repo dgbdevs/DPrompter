@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useStore, Script, FontSize } from '../../store/useStore';
+import { useStore, Script, FontSize, DisplayMode } from '../../store/useStore';
 import { Plus, Trash2, FileText, Save, Check, ChevronDown } from 'lucide-react';
 
 const FONT_SIZE_OPTIONS: { value: FontSize; label: string }[] = [
@@ -19,6 +19,7 @@ export const ScriptsTab: React.FC = () => {
   const [localContent, setLocalContent] = useState('');
   const [localSpeed, setLocalSpeed] = useState(1.0);
   const [localFontSize, setLocalFontSize] = useState<FontSize>('xl');
+  const [localDisplayMode, setLocalDisplayMode] = useState<DisplayMode>('vertical');
   const [saved, setSaved] = useState(false);
   const [dirty, setDirty] = useState(false);
 
@@ -29,6 +30,7 @@ export const ScriptsTab: React.FC = () => {
       setLocalContent(activeScript.content);
       setLocalSpeed(activeScript.speedMultiplier);
       setLocalFontSize(activeScript.fontSize || 'xl');
+      setLocalDisplayMode(activeScript.displayMode || 'vertical');
       setDirty(false);
       setSaved(false);
     }
@@ -41,6 +43,7 @@ export const ScriptsTab: React.FC = () => {
       content: '',
       speedMultiplier: 1.0,
       fontSize: 'xl',
+      displayMode: 'vertical',
       createdAt: Date.now(),
       updatedAt: Date.now(),
     };
@@ -56,11 +59,24 @@ export const ScriptsTab: React.FC = () => {
       content: localContent,
       speedMultiplier: localSpeed,
       fontSize: localFontSize,
+      displayMode: localDisplayMode,
     });
     setSaved(true);
     setDirty(false);
     setTimeout(() => setSaved(false), 2000);
   };
+
+  // Ctrl+S to save
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.key === 's') {
+        e.preventDefault();
+        handleSave();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
 
   const markDirty = () => {
     setDirty(true);
@@ -149,11 +165,11 @@ export const ScriptsTab: React.FC = () => {
             </div>
           </div>
 
-          {/* Speed + Font Size row */}
-          <div className="flex items-center gap-6 mb-4 px-1">
+          {/* Speed + Font Size + Mode row */}
+          <div className="flex flex-wrap items-center gap-x-5 gap-y-3 mb-4 px-1">
             {/* Speed */}
-            <div className="flex items-center gap-3 flex-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Velocidad</span>
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/25 shrink-0">Velocidad</span>
               <input
                 type="range"
                 min="0.1"
@@ -161,19 +177,19 @@ export const ScriptsTab: React.FC = () => {
                 step="0.1"
                 value={localSpeed}
                 onChange={(e) => { setLocalSpeed(parseFloat(e.target.value)); markDirty(); }}
-                className="flex-1 accent-white h-1 max-w-[200px]"
+                className="accent-white h-1 w-[120px]"
               />
-              <span className="text-xs font-bold text-white/50 tabular-nums w-10 text-right">{localSpeed.toFixed(1)}x</span>
+              <span className="text-xs font-bold text-white/50 tabular-nums w-10 text-right shrink-0">{localSpeed.toFixed(1)}x</span>
             </div>
 
             {/* Font Size */}
-            <div className="flex items-center gap-3">
-              <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Fuente</span>
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/25 shrink-0">Fuente</span>
               <div className="relative group">
                 <select
                   value={localFontSize}
                   onChange={(e) => { setLocalFontSize(e.target.value as FontSize); markDirty(); }}
-                  className="appearance-none bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-[10px] font-black uppercase pl-3 pr-8 py-2 rounded-lg border border-white/5 hover:border-white/10 transition-all cursor-pointer outline-none w-28"
+                  className="appearance-none bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-[10px] font-black uppercase pl-3 pr-7 py-1.5 rounded-lg border border-white/5 hover:border-white/10 transition-all cursor-pointer outline-none w-20"
                 >
                   {FONT_SIZE_OPTIONS.map((opt) => (
                     <option key={opt.value} value={opt.value} className="bg-[#1a1a1a] text-white">
@@ -181,7 +197,23 @@ export const ScriptsTab: React.FC = () => {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={12} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-white/40 transition-colors" />
+                <ChevronDown size={10} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-white/40 transition-colors" />
+              </div>
+            </div>
+
+            {/* Display Mode */}
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/25 shrink-0">Modo</span>
+              <div className="relative group">
+                <select
+                  value={localDisplayMode}
+                  onChange={(e) => { setLocalDisplayMode(e.target.value as DisplayMode); markDirty(); }}
+                  className="appearance-none bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-[10px] font-black uppercase pl-3 pr-7 py-1.5 rounded-lg border border-white/5 hover:border-white/10 transition-all cursor-pointer outline-none w-28"
+                >
+                  <option value="vertical" className="bg-[#1a1a1a] text-white">↕ Vertical</option>
+                  <option value="horizontal" className="bg-[#1a1a1a] text-white">↔ Horizontal</option>
+                </select>
+                <ChevronDown size={10} className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-white/20 group-hover:text-white/40 transition-colors" />
               </div>
             </div>
           </div>
